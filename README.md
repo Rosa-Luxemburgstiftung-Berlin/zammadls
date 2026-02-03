@@ -1,0 +1,2 @@
+# zammadls
+zammad helper scripts
