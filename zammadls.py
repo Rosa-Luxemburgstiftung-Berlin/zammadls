@@ -10,7 +10,7 @@ import argparse
 # https://zammad-py.readthedocs.io/en/latest/usage.html
 from zammad_py import ZammadAPI
 
-import zammadls.config
+import zammadls.zammad
 
 class LoggingAction(argparse.Action):
     # pylint: disable=redefined-outer-name
@@ -52,10 +52,10 @@ logger.debug('config ...')
 try:
     if args.config:
         configfiles = [item for sublist in args.config for item in sublist]
-        cfg = zammadls.config.ZammadlConfig(configfiles)
+        cfg = zammadls.zammad.ZammadlConfig(configfiles)
     else:
-        cfg = zammadls.config.ZammadlConfig()
-except zammadls.config.ZammadlConfigException as e:
+        cfg = zammadls.zammad.ZammadlConfig()
+except zammadls.zammad.ZammadlConfigException as e:
     logger.fatal(e)
     sys.exit(1)
 
