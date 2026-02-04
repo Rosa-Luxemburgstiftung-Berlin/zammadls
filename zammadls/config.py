@@ -29,3 +29,7 @@ class ZammadlConfig:
         if not 'authtoken' in self.config:
             if not 'authuser' in self.config or not 'authpass' in self.config:
                 raise ZammadlConfigException('missing auth')
+
+    def get(self, key, defaultvalue=None):
+        """get a config value"""
+        return self.config.get(key, defaultvalue)

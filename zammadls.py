@@ -52,21 +52,20 @@ logger.debug('config ...')
 try:
     if args.config:
         configfiles = [item for sublist in args.config for item in sublist]
-        zcfg = zammadls.config.ZammadlConfig(configfiles)
+        cfg = zammadls.config.ZammadlConfig(configfiles)
     else:
-        zcfg = zammadls.config.ZammadlConfig()
+        cfg = zammadls.config.ZammadlConfig()
 except zammadls.config.ZammadlConfigException as e:
     logger.fatal(e)
     sys.exit(1)
-cfg = zcfg.config
 
 if not cfg.get('verify', True):
     urllib3.disable_warnings()
 
 # init zammad
-logger.info('zammad connection %s ...', cfg['baseurl'])
+logger.info('zammad connection %s ...', cfg.get('baseurl'))
 zammad = ZammadAPI(
-    url=cfg['baseurl'],
+    url=cfg.get('baseurl'),
     username=cfg.get('authuser', None),
     password=cfg.get('authpass', None),
     http_token=cfg.get('authtoken', None),
