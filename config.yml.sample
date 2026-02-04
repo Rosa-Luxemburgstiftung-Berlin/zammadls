@@ -1,0 +1,10 @@
+---
+
+# sample config for zammad helper scripts
+
+# baseurl:
+# authtoken:
+# authuser:
+# authpass:
+#  verify: False  # do not verify ssl
+
