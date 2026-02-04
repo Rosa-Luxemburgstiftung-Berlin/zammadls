@@ -6,6 +6,10 @@
 import sys
 import logging
 import argparse
+
+# https://zammad-py.readthedocs.io/en/latest/usage.html
+from zammad_py import ZammadAPI
+
 import zammadls.config
 
 class LoggingAction(argparse.Action):
@@ -48,10 +52,24 @@ logger.debug('config ...')
 try:
     if args.config:
         configfiles = [item for sublist in args.config for item in sublist]
-        cfg = zammadls.config.ZammadlConfig(configfiles)
+        zcfg = zammadls.config.ZammadlConfig(configfiles)
     else:
-        cfg = zammadls.config.ZammadlConfig()
+        zcfg = zammadls.config.ZammadlConfig()
 except zammadls.config.ZammadlConfigException as e:
     logger.fatal(e)
     sys.exit(1)
+cfg = zcfg.config
 
+if not cfg.get('verify', True):
+    urllib3.disable_warnings()
+
+# init zammad
+logger.info('zammad connection %s ...', cfg['baseurl'])
+zammad = ZammadAPI(
+    url=cfg['baseurl'],
+    username=cfg.get('authuser', None),
+    password=cfg.get('authpass', None),
+    http_token=cfg.get('authtoken', None),
+    )
+zammad.session.verify = cfg.get('verify', True)  # ssl verification
+logger.info('... connections established')
