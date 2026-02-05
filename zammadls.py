@@ -7,19 +7,9 @@ import sys
 import logging
 import argparse
 
-# https://zammad-py.readthedocs.io/en/latest/usage.html
-from zammad_py import ZammadAPI
-
 import zammadls.zammadls
 
-class LoggingAction(argparse.Action):
-    # pylint: disable=redefined-outer-name
-    def __call__(self, parser, namespace, values, option_string=None):
-        logger = logging.getLogger()
-        logger.setLevel(values)
-        setattr(namespace, self.dest, values)
-
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.WARN,
     format='%(asctime)s %(levelname)-8s\t[%(name)s] %(funcName)s: %(message)s',
@@ -31,44 +21,5 @@ parser = argparse.ArgumentParser(
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-parser.add_argument(
-    '-l', '--loglevel',
-    help='set loglevel',
-    type=str,
-    choices=[k for k in list(logging.getLevelNamesMapping().keys()) if isinstance(k, str)],
-    action=LoggingAction
-    )
+zammadl = zammadls.zammadls.Zammadl(parser)
 
-parser.add_argument(
-    '-c','--config',
-    nargs='+',
-    action="append",
-    help='config file'
-    )
-
-args = parser.parse_args()
-
-logger.debug('config ...')
-try:
-    if args.config:
-        configfiles = [item for sublist in args.config for item in sublist]
-        cfg = zammadls.zammadls.Zammadl(configfiles)
-    else:
-        cfg = zammadls.zammadls.Zammadl()
-except zammadls.zammadls.ZammadlConfigException as e:
-    logger.fatal(e)
-    sys.exit(1)
-
-if not cfg.get('verify', True):
-    urllib3.disable_warnings()
-
-# init zammad
-logger.info('zammad connection %s ...', cfg.get('baseurl'))
-zammad = ZammadAPI(
-    url=cfg.get('baseurl'),
-    username=cfg.get('authuser', None),
-    password=cfg.get('authpass', None),
-    http_token=cfg.get('authtoken', None),
-    )
-zammad.session.verify = cfg.get('verify', True)  # ssl verification
-logger.info('... connections established')
