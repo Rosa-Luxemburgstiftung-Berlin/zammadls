@@ -52,9 +52,9 @@ logger.debug('config ...')
 try:
     if args.config:
         configfiles = [item for sublist in args.config for item in sublist]
-        cfg = zammadls.zammadls.ZammadlConfig(configfiles)
+        cfg = zammadls.zammadls.Zammadl(configfiles)
     else:
-        cfg = zammadls.zammadls.ZammadlConfig()
+        cfg = zammadls.zammadls.Zammadl()
 except zammadls.zammadls.ZammadlConfigException as e:
     logger.fatal(e)
     sys.exit(1)

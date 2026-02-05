@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class ZammadlConfigException(Exception):
     """dummy Exception raised on wrong config"""
 
-class ZammadlConfig:
+class Zammadl:
     """handle config"""
     def __init__(self, cfgfiles=['config.yml', 'config/config.yml']):
         self.config = hiyapyco.load(
@@ -29,6 +29,9 @@ class ZammadlConfig:
         if not 'authtoken' in self.config:
             if not 'authuser' in self.config or not 'authpass' in self.config:
                 raise ZammadlConfigException('missing auth')
+
+    def getZammadlConfig(self):
+        return self.config
 
     def get(self, key, defaultvalue=None):
         """get a config value"""
