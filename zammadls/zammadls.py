@@ -66,7 +66,7 @@ class Zammadl:
             raise ZammadlConfigException('no config found')
         self._check_config()
 
-        if not self.get('verify', True):
+        if not self.get_config_value('verify', True):
             urllib3.disable_warnings()
 
     def _check_config(self):
@@ -77,14 +77,14 @@ class Zammadl:
                 raise ZammadlConfigException('missing auth')
 
     def _connect(self):
-        logger.info('zammad connection %s ...', self.get('baseurl'))
+        logger.info('zammad connection %s ...', self.get_config_value('baseurl'))
         zammad = ZammadAPI(
-            url=self.get('baseurl'),
-            username=self.get('authuser', None),
-            password=self.get('authpass', None),
-            http_token=self.get('authtoken', None),
+            url=self.get_config_value('baseurl'),
+            username=self.get_config_value('authuser', None),
+            password=self.get_config_value('authpass', None),
+            http_token=self.get_config_value('authtoken', None),
             )
-        zammad.session.verify = self.get('verify', True)  # ssl verification
+        zammad.session.verify = self.get_config_value('verify', True)  # ssl verification
         logger.info('... connections established')
         return zammad
 
@@ -92,6 +92,6 @@ class Zammadl:
         """get zammadl config"""
         return self.config
 
-    def get(self, key, defaultvalue=None):
+    def get_config_value(self, key, defaultvalue=None):
         """get a config value"""
         return self.config.get(key, defaultvalue)
