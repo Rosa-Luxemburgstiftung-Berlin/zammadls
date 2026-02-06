@@ -2,9 +2,15 @@
 
 # sample config for zammad helper scripts
 
+## url
+#  https://your.zammad.hostname/api/v1/
 # baseurl:
+
+## auth
+# access required: admin, ticket.agent
 # authtoken:
 # authuser:
 # authpass:
-#  verify: False  # do not verify ssl
 
+## do not verify ssl
+#  verify: False
