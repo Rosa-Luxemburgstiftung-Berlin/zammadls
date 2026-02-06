@@ -13,6 +13,12 @@ source .zammadls/bin/activate
 pip install -r requirements.txt
 ```
 
+## config
+
+create a configuration (see `config.yml.sample`)
+
+(the account used requires admin **and** agent rights)
+
 ## scripts
 
 ### retag
