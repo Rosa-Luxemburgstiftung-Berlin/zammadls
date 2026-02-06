@@ -33,20 +33,20 @@ class Zammadl:
         self.args = self._argParse()
         self._config()
         self._connect()
-        
+
     def _argParse(self):
         """set default args and parse"""
         self.parser.add_argument(
-            '-l', '--loglevel',  
-            help='set loglevel', 
+            '-l', '--loglevel',
+            help='set loglevel',
             type=str,
             choices=[k for k in list(logging.getLevelNamesMapping().keys()) if isinstance(k, str)],
-            action=LoggingAction 
+            action=LoggingAction
             )
-        self.parser.add_argument( 
-            '-c','--config', 
+        self.parser.add_argument(
+            '-c','--config',
             nargs='+',
-            action="append", 
+            action="append",
             help='config file'
             )
         return self.parser.parse_args()
