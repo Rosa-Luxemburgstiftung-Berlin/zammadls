@@ -1,5 +1,5 @@
 # pip install -r requirements.txt
-zammad_py>=3.2.0
+zammad_py>=3.2.1
 hiyapyco
 # optional
 pylint==3.3.4
