@@ -1,0 +1,22 @@
+name: Pylint
+on:
+  pull_request:
+  push:
+  schedule:
+    # first of each month
+    - cron: '0 0 1 * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.13.5  # debian trixie
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Analysing the code with pylint
+      run: pylint *.py zammadls/*.py
