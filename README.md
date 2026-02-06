@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 create a configuration (see `config.yml.sample`)
 
-the default locations the config is expected are: 'config.yml', 'config/config.yml'
+the default locations the config is expected are: `config.yml` and `config/config.yml`
 
 (the account used requires admin **and** agent rights)
 
