@@ -32,7 +32,7 @@ class Zammadl:
         self.parser = parser
         self.args = self._argparse()
         self._config()
-        self._connect()
+        self.zammad = self._connect()
 
     def _argparse(self):
         """set default args and parse"""
