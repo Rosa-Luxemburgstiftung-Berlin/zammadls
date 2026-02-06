@@ -33,6 +33,10 @@ parser.add_argument('-t', '--tags',
     action="append",
     required=True
     )
+parser.add_argument('-r', '--donotdelete',
+    help='do not delete tags, just remove them from tickets',
+    action="store_true"
+    )
 parser.add_argument('-a', '--addtags',
     help='tag to add to all tickets that have the old tag',
     nargs='+',
@@ -78,3 +82,11 @@ for rtag in removetags:
             if not zammadl.args.dryrun:
                 zammadl.zammad.ticket_tag.add(ticket['id'], ntag)
             logger.debug(' ... added tag %s', ntag)
+
+if not zammadl.args.donotdelete:
+    # finally remove the tags itself
+    rts = [rt for rt in alltags if rt['name'] in removetags]
+    for rt in rts:
+        logger.info('delete tag %s (id:%s)', rt['name'], rt['id'])
+        if not zammadl.args.dryrun:
+            zammadl.zammad.taglist.destroy(rt['id'])
