@@ -19,13 +19,15 @@ pip install -r requirements.txt
 
 Zammad helper script to delete or change tags
 
-Examples:
+#### Examples:
+
 ```
   ./retag.py -l INFO -t TESTREPLACETAG -a NEWREPLACETAG
   ./retag.py -l INFO -t TESTREPLACETAG ANOTHETRTAGTOREPLACE -a NEWREPLACETAG
 ```
 
-Options:
+#### Options:
+
 ```
   -h, --help            show this help message and exit
   -t, --tags TAGS [TAGS ...]
