@@ -57,7 +57,7 @@ if addtags:
 # check if tags exists
 logger.info('fetching all tags from instance ...')
 alltags = zammadl.zammad.taglist.all()
-alltagnames = set([t['name'] for t in alltags])
+alltagnames = {t['name'] for t in alltags}
 rtags = list(set(removetags) - alltagnames)
 for t in rtags:
     logger.warning('tag %s not found, ignoring', t)
