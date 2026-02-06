@@ -85,7 +85,7 @@ class Zammadl:
             http_token=self.get_config_value('authtoken', None),
             )
         zammad.session.verify = self.get_config_value('verify', True)  # ssl verification
-        logger.info('... connections established')
+        logger.info('... connection configured')
         return zammad
 
     def get_zammadl_config(self):
