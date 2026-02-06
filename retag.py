@@ -3,7 +3,12 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 smartindent ft=python
 # pylint: disable=fixme
 
-"""zammad helper script to delete or change tags"""
+"""
+Zammad helper script to delete or change tags
+
+Example:
+  ./retag.py -l INFO -t TESTREPLACETAG -a NEWREPLACETAG
+"""
 
 import logging
 import argparse
@@ -19,7 +24,7 @@ logging.basicConfig(
 
 parser = argparse.ArgumentParser(
     description=__doc__,
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
 parser.add_argument('-t', '--tags',
