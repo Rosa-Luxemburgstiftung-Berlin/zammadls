@@ -3,6 +3,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 smartindent ft=python
 # pylint: disable=fixme
 
+"""zammad helper script to delete or change tags"""
+
 import logging
 import argparse
 
@@ -16,7 +18,7 @@ logging.basicConfig(
     )
 
 parser = argparse.ArgumentParser(
-    description='zammad helper script',
+    description=__doc__,
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
