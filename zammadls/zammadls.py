@@ -30,11 +30,11 @@ class Zammadl:
     """zammad config and connection"""
     def __init__(self, parser):
         self.parser = parser
-        self.args = self._argParse()
+        self.args = self._argparse()
         self._config()
         self._connect()
 
-    def _argParse(self):
+    def _argparse(self):
         """set default args and parse"""
         self.parser.add_argument(
             '-l', '--loglevel',
@@ -64,12 +64,12 @@ class Zammadl:
             loglevel=logging.ERROR)
         if not self.config:
             raise ZammadlConfigException('no config found')
-        self._checkConfig()
+        self._check_config()
 
         if not self.get('verify', True):
             urllib3.disable_warnings()
 
-    def _checkConfig(self):
+    def _check_config(self):
         if not 'baseurl' in self.config:
             raise ZammadlConfigException('missing baseurl')
         if not 'authtoken' in self.config:
@@ -88,7 +88,8 @@ class Zammadl:
         logger.info('... connections established')
         return zammad
 
-    def getZammadlConfig(self):
+    def get_zammadl_config(self):
+        """get zammadl config"""
         return self.config
 
     def get(self, key, defaultvalue=None):
