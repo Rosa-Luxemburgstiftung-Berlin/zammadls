@@ -49,7 +49,7 @@ class Zammadl:
             '-c','--config',
             nargs='+',
             action="append",
-            help='config file'
+            help='config file(s) (defaults: config.yml, config/config.yml)'
             )
         self.parser.add_argument('-n', '--dryrun',
             help='dry run, do not perform changes',
