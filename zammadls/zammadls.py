@@ -32,7 +32,7 @@ class Zammadl:
         self.parser = parser
         self.args = self._argparse()
         if self.args.dryrun:
-            logger.warn('dryrun enabled - no real changes will be performed')
+            logger.warning('dryrun enabled - no real changes will be performed')
         self._config()
         self.zammad = self._connect()
 
