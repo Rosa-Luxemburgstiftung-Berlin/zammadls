@@ -2,6 +2,10 @@
 
 # sample config for zammad helper scripts
 
+# the default locations the config is expected are:
+# 'config.yml'
+# 'config/config.yml'
+
 ## url
 #  https://your.zammad.hostname/api/v1/
 # baseurl:
