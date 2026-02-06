@@ -60,7 +60,7 @@ alltags = zammadl.zammad.taglist.all()
 alltagnames = set([t['name'] for t in alltags])
 rtags = list(set(removetags) - alltagnames)
 for t in rtags:
-    logger.warn('tag %s not found, ignoring', t)
+    logger.warning('tag %s not found, ignoring', t)
     removetags.remove(t)
 if rtags:
     logger.info('remaining tags to remove: %s', ', '.join(removetags))
