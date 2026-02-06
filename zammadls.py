@@ -3,7 +3,6 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 smartindent ft=python
 # pylint: disable=fixme
 
-import sys
 import logging
 import argparse
 
@@ -22,4 +21,3 @@ parser = argparse.ArgumentParser(
     )
 
 zammadl = zammadls.zammadls.Zammadl(parser)
-
