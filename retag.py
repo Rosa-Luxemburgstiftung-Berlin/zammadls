@@ -10,6 +10,7 @@ Example:
   ./retag.py -l INFO -t TESTREPLACETAG -a NEWREPLACETAG
 """
 
+import sys
 import logging
 import argparse
 
@@ -43,7 +44,11 @@ parser.add_argument('-a', '--addtags',
     action="append",
     )
 
-zammadl = zammadls.zammadls.Zammadl(parser)
+try:
+    zammadl = zammadls.zammadls.Zammadl(parser)
+except zammadls.zammadls.ZammadlConfigException as e:
+    logger.fatal(e)
+    sys.exit(1)
 
 # flatten tag list
 removetags = [item for sublist in zammadl.args.tags for item in sublist]
