@@ -72,9 +72,9 @@ class Zammadl:
                 failonmissingfiles=failonmissingfiles,
                 loglevel=logging.ERROR)
         except hiyapyco.HiYaPyCoInvocationException as e:
-            raise ZammadlConfigException(e)
+            raise ZammadlConfigException(e) from e
         if not self.config:
-            raise ZammadlConfigException('no config found')
+            raise ZammadlConfigException('no config found ',  ', '.join(cfgfiles))
         self._check_config()
 
         if not self.get_config_value('verify', True):
