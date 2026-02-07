@@ -60,14 +60,19 @@ class Zammadl:
     def _config(self):
         """setup config"""
         cfgfiles = ['config.yml', 'config/config.yml']
+        failonmissingfiles = False
         if self.args.config:
             cfgfiles = [item for sublist in self.args.config for item in sublist]
+            failonmissingfiles = True
         logger.info('loading config from: %s', ':'.join(cfgfiles))
-        self.config = hiyapyco.load(
-            cfgfiles, method=hiyapyco.METHOD_MERGE,
-            usedefaultyamlloader=True,
-            failonmissingfiles=False,
-            loglevel=logging.ERROR)
+        try:
+            self.config = hiyapyco.load(
+                cfgfiles, method=hiyapyco.METHOD_MERGE,
+                usedefaultyamlloader=True,
+                failonmissingfiles=failonmissingfiles,
+                loglevel=logging.ERROR)
+        except hiyapyco.HiYaPyCoInvocationException as e:
+            raise ZammadlConfigException(e)
         if not self.config:
             raise ZammadlConfigException('no config found')
         self._check_config()
