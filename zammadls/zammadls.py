@@ -26,6 +26,9 @@ class LoggingAction(argparse.Action):
 class ZammadlConfigException(Exception):
     """dummy Exception raised on wrong config"""
 
+class ZammadlException(Exception):
+    """dummy Exception raised as a generic error"""
+
 class Zammadl:
     """zammad config and connection"""
     def __init__(self, parser):
@@ -106,3 +109,26 @@ class Zammadl:
     def get_config_value(self, key, defaultvalue=None):
         """get a config value"""
         return self.config.get(key, defaultvalue)
+
+    def get_user(self, userident, useridentfield='login'):
+        """get a uniq and exact matching user"""
+        userident = userident.lower()
+        ruser_pages = []
+        user_pages = self.zammad.user.search(f'{useridentfield}:{userident}')
+        logger.info(
+            'search zammad user %s %s ... found %s',
+            useridentfield, userident, len(user_pages)
+            )
+        for user in user_pages:
+            logger.debug(
+                'check zammad user "%s" =?= "%s" ...',
+                user[useridentfield].lower(), userident
+                )
+            if user[useridentfield].lower() == userident:
+                ruser_pages.append(user)
+                logger.debug('check zammad user %s : OK, matches', userident)
+        ucount = len(ruser_pages)
+        if ucount == 1:
+            return ruser_pages[0]
+        logger.fatal('found %s matches for %s=%s', ucount, useridentfield, userident)
+        raise ZammadlException(f'found {ucount} users matching {useridentfield}:{userident}')
