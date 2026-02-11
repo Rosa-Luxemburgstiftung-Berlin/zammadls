@@ -42,6 +42,10 @@ parser.add_argument('-t', '--targetuser',
     help='to users',
     type=str,
     required=True)
+parser.add_argument('-T', '--tickets',
+    help='limit migration to the tickets only (can be id or #number)',
+    nargs='+',
+    action="append")
 parser.add_argument('-d', '--delete',
     help='delete the original user after all',
     action="store_true"
@@ -75,26 +79,45 @@ transform_article_elements = ['created_by_id', 'origin_by_id', 'sender_id', 'upd
 # TODO: diff between search and find?
 tickets = zammadl.zammad.ticket.search(userf['login'])
 logger.info('found %s tickets to process', len(tickets))
+ticketfilter = []
+if zammadl.args.tickets:
+    ticketfilter = [item for sublist in zammadl.args.tickets for item in sublist]
 for ticket in tickets:
-    logger.info('processing ticket id:%s title:"%s" ...', ticket['id'], ticket['title'])
-    # update user id references in tickets"""
+    if ticketfilter:
+        if not {'%s' % ticket['id'], '#%s' % ticket['number']} & set(ticketfilter):
+            logger.info(
+                'ignoring ticket id:%s #%s title:"%s" ...',
+                ticket['id'], ticket['number'], ticket['title']
+            )
+            continue
+    logger.info(
+        'processing ticket id:%s #%s title:"%s" ...',
+        ticket['id'], ticket['number'], ticket['title']
+    )
+    # update user id references in tickets
     # https://docs.zammad.org/en/latest/api/ticket/index.html
     update_ticket = False
     for k in transform_ticket_elements:
         logger.debug('... check %s (%s) ...', k, ticket[k])
         if ticket[k] == userf['id']:
             logger.info('... will update %s for ticket id:%s', k, ticket['id'])
-            ticket[k] == usert['id']
+            ticket[k] = usert['id']
             update_ticket = True
         if update_ticket and not zammadl.args.dryrun:
-            logger.debug('... run update for ticket id:%s title:"%s" ...', ticket['id'], ticket['title'])
+            logger.debug(
+                '... run update for ticket id:%s title:"%s" ...',
+                ticket['id'], ticket['title']
+            )
             zammadl.zammad.ticket.update(id=ticket['id'], params=ticket)
     if ticket['article_count'] > 0:
         # process articles
         ticket_articles = zammadl.zammad.ticket.articles(ticket['id'])
         for article in ticket_articles:
             update_article = False
-            logger.info('processing article id:%s for ticket id:%s ...', article['id'], ticket['id'])
+            logger.info(
+                'processing article id:%s for ticket id:%s ...',
+                article['id'], ticket['id']
+            )
             for k in transform_article_elements:
                 logger.debug('... check %s (%s) ...', k, article[k])
                 if article[k] == userf['id']:
@@ -102,7 +125,10 @@ for ticket in tickets:
                     article[k] = usert['id']
                     update_article = True
             if update_article and not zammadl.args.dryrun:
-                logger.debug('... run update for article id:%s (ticket id:%s)',  article['id'], ticket['id'])
+                logger.debug(
+                    '... run update for article id:%s (ticket id:%s)',
+                    article['id'], ticket['id']
+                )
                 zammadl.zammad.ticket_article.update(id=article['id'], params=article)
 
 # todo: set updated_by_id to me().id ?
