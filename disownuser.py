@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # vim: set fileencoding=utf-8
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 smartindent ft=python
-# pylint: disable=fixme
+# pylint: disable=fixme,invalid-name,consider-using-f-string
 
 """
 Zammad helper script to migrate all tickets and articles from one user to another
