@@ -79,7 +79,7 @@ for rtag in removetags:
     tickets = zammadl.zammad.ticket.search(f'tags:{rtag}')
     logger.info('tag %s : found %s tickets', rtag, len(tickets))
     for ticket in tickets:
-        logger.debug('ticket id:%s ...', ticket['id'])
+        logger.info('ticket id:%s ...', ticket['id'])
         if not zammadl.args.dryrun:
             zammadl.zammad.ticket_tag.remove(ticket['id'], rtag)
         logger.debug(' ... removed tag %s', rtag)
