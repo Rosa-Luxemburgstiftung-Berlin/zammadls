@@ -67,16 +67,21 @@ if zammadl.args.delete and zammadl.args.disable:
 
 # search user
 userf = zammadl.get_user(zammadl.args.originaluser, zammadl.args.userident)
-logger.debug('originaluser id: %s', userf['id'])
+logger.info('originaluser id: %s', userf['id'])
 usert = zammadl.get_user(zammadl.args.targetuser, zammadl.args.userident)
-logger.debug('zammadl.args.targetuser id: %s', usert['id'])
+logger.info('targetuser id: %s', usert['id'])
 
 transform_ticket_elements = ['owner_id', 'customer_id', 'created_by_id', 'updated_by_id']
-transform_article_elements = ['created_by_id', 'origin_by_id', 'sender_id', 'updated_by_id']
-# ? created_by, updated_by
+transform_article_elements = {
+    'created_by_id': 'id',
+    'origin_by_id': 'id',
+    'sender_id': 'id',
+    'updated_by_id': 'id',
+    'origin_by': 'login',
+}
 
 # get all stuff related to userf
-# TODO: diff between search and find?
+# diff between search and find : find requires id and returns just one object
 tickets = zammadl.zammad.ticket.search(userf['login'])
 logger.info('found %s tickets to process', len(tickets))
 ticketfilter = []
@@ -118,17 +123,19 @@ for ticket in tickets:
                 'processing article id:%s for ticket id:%s ...',
                 article['id'], ticket['id']
             )
-            for k in transform_article_elements:
+            for k, v in transform_article_elements.items():
                 logger.debug('... check %s (%s) ...', k, article[k])
-                if article[k] == userf['id']:
+                if article[k] == userf[v]:
                     logger.info('... will update %s for article id:%s', k, article['id'])
-                    article[k] = usert['id']
+                    article[k] = usert[v]
                     update_article = True
             if update_article and not zammadl.args.dryrun:
                 logger.debug(
                     '... run update for article id:%s (ticket id:%s)',
                     article['id'], ticket['id']
                 )
+                # FIXME: changing article author is not working as expected,
+                # despite the fact that the api call runs eithout a error
                 zammadl.zammad.ticket_article.update(id=article['id'], params=article)
 
-# todo: set updated_by_id to me().id ?
+# TODO: add a final article to notice changes made my me().id
