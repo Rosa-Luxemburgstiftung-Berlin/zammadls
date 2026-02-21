@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # vim: set fileencoding=utf-8
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 smartindent ft=python
-# pylint: disable=fixme
+# pylint: disable=fixme,invalid-name
 
 """
 Zammad helper script to delete or change tags
@@ -64,7 +64,7 @@ if addtags:
         zammadl.zammad.taglist.create({'name': ntag})
 
 # check if tags exists
-logger.info('fetching all tags from instance ...')
+logger.info('fetching all tags from instance ... (this can take some time)')
 alltags = zammadl.zammad.taglist.all()
 alltagnames = {t['name'] for t in alltags}
 rtags = list(set(removetags) - alltagnames)
@@ -75,18 +75,32 @@ if rtags:
     logger.info('remaining tags to remove: %s', ', '.join(removetags))
 
 for rtag in removetags:
+    # total ticket count
+    total_tickets = [t['count'] for t in alltags if t['name'] == rtag][0]
+    logger.info('tag %s : total %s tickets', rtag, total_tickets)
     # fetch all tickets
+    fetch_tickets = True
     tickets = zammadl.zammad.ticket.search(f'tags:{rtag}')
-    logger.info('tag %s : found %s tickets', rtag, len(tickets))
-    for ticket in tickets:
-        logger.info('ticket id:%s ...', ticket['id'])
-        if not zammadl.args.dryrun:
-            zammadl.zammad.ticket_tag.remove(ticket['id'], rtag)
-        logger.debug(' ... removed tag %s', rtag)
-        for ntag in addtags:
+    while len(tickets) > 0 and fetch_tickets:
+        # pylint: disable=protected-access
+        logger.info(
+            'tag %s : processing page %s with %s tickets',
+            rtag, tickets._page, len(tickets)
+        )
+        for ticket in tickets:
+            logger.info('ticket id:%s ...', ticket['id'])
             if not zammadl.args.dryrun:
-                zammadl.zammad.ticket_tag.add(ticket['id'], ntag)
-            logger.debug(' ... added tag %s', ntag)
+                zammadl.zammad.ticket_tag.remove(ticket['id'], rtag)
+            logger.debug(' ... removed tag %s', rtag)
+            for ntag in addtags:
+                if not zammadl.args.dryrun:
+                    zammadl.zammad.ticket_tag.add(ticket['id'], ntag)
+                logger.debug(' ... added tag %s', ntag)
+        if not tickets.is_last_page():
+            tickets = tickets.next_page()
+            logger.info('... continuing with next page ...')
+        else:
+            fetch_tickets = False
 
 if not zammadl.args.donotdelete:
     # finally remove the tags itself
