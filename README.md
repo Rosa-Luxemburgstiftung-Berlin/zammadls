@@ -49,3 +49,20 @@ Zammad helper script to delete or change tags
                         config file
   -n, --dryrun          dry run, do not perform changes
 ```
+
+#### Batch Processing:
+
+```
+cat <batch file>.csv | xargs -L 1 ./retag.py
+```
+
+with a `<batch file>` like
+
+```
+-a ABbaramundicleanup2019 -t Abbaramundicleanup2019
+-a ABbitlockerissue -t Abbitlockerissue
+-a ABgpo -t Abgpo
+-a ABinformationrequest -t Abinformationrequest
+-a ABinfrastruktur -t Abinfrastruktur Abinfra Abinfrastructure
+...
+```
